@@ -1,0 +1,469 @@
+(sys:load "/home/fabien/Desktop/extempore_code/fablib.xtm")
+
+
+;; finir avec conversion
+(begin
+
+(define composite-pattern
+  (lambda (a . b)
+    (append (list a ) b)))
+
+
+(define PGCD
+  (lambda (a b)
+    (if (= 0 b)
+      a
+      (PGCD b (modulo b a)))))
+
+(define PPCM-in
+  (lambda (a b)
+    (if (null? b)
+      a
+      (PPCM-in (lcm a (car b)) (cdr b)))))
+
+
+
+(define PPCM
+  (lambda (a . b)
+      (PPCM-in a b)))
+
+(define PPCM-list
+  (lambda (lst)
+    (PPCM-in (car lst) (cdr lst))))
+
+(define sk 'sk)
+
+(define sk-length 
+  (lambda (k) 
+    k))
+
+(define sk-steps
+  (lambda (k)
+    1))
+
+(define sk-list
+  (lambda (k)
+    (list k)))
+
+
+
+(define ik 'ik)
+
+(define ik-list-in
+  (lambda (k)
+    (if (odd? k) 
+      (if (= k 1)
+        (list 1)
+        (cons k (ik-list-in (- k 2))))
+      '())))
+
+(define ik-list
+  (lambda (k)
+    (reverse-list (ik-list-in k))))
+
+
+(define ik-length 
+  (lambda (k)
+    (if (odd? k)
+      (if (= k 1)
+        1
+        (inexact->exact 
+          (expt (/ (+ 1 k) 2) 2))
+      0))))
+
+(define ik-steps
+  (lambda (k)
+    (if (odd? k)
+      (/ (+ k 1) 2)
+      0)))
+
+(define pk 'pk)
+
+(define pk-list-in
+  (lambda (k)
+    (if (even? k) 
+      (if (= k 2)
+        (list 2)
+        (cons k (pk-list-in (- k 2))))
+      '())))
+
+(define pk-list
+  (lambda (k)
+    (reverse-list (pk-list-in k))))
+
+
+(define pk-length
+  (lambda (k)
+    (if (not (odd? k))
+      (inexact->exact
+        (+ (expt (/ k 2) 2) (/ k 2)))
+      0)))
+
+(define pk-steps
+  (lambda (k)
+    (if (even? k)
+      (/ k 2)
+      0)))
+
+(define nk 'nk)
+
+(define nk-list-in
+  (lambda (k) 
+      (if (> k 1)
+        (cons k (nk-list-in (- k 1)))
+        (list 1))))
+
+(define nk-list
+  (lambda (k)
+    (reverse-list (nk-list-in k))))
+
+
+
+(define nk-length
+  (lambda (k)
+    (inexact->exact
+      (/ (+ (expt k 2) k)
+         2))))
+
+(define nk-steps
+  (lambda (k)
+    k))
+
+
+(define nkc 'nkc)
+
+(define nkc-list-in
+  (lambda (k) 
+      (append 
+        (cdr (nk-list k))
+        (cdr (reverse-list (nk-list k))))))
+
+(define nkc-list
+  (lambda (k)
+    (reverse-list (nkc-list-in k))))
+
+(define nkc-length
+  (lambda (k)
+    (if (= 1 k)
+      1
+      (inexact->exact
+        (- (expt k 2) 1)))))
+
+
+
+(define nkc-steps
+  (lambda (k)
+    (if (= k 1)
+      1
+      (- (* 2 (nk-steps k)) 2))))
+
+(define ikc 'ikc)
+
+(define ikc-list-in
+  (lambda (k) 
+      (append 
+        (cdr (ik-list k))
+        (cdr (reverse-list (ik-list k))))))
+
+(define ikc-list
+  (lambda (k)
+    (reverse-list (ikc-list-in k))))
+
+(define ikc-length
+  (lambda (k)
+    (inexact->exact
+      (- (/ (expt (+ k 1) 2) 2) (+ k 1)))))
+
+(define ikc-steps
+  (lambda (k)
+    (if (= k 1)
+      1
+      (- (* 2 (/ (+ k 1) 2)) 2))))
+
+
+(define pkc 'pkc)
+
+(define pkc-list-in
+  (lambda (k) 
+      (append 
+        (cdr (pk-list k))
+        (cdr (reverse-list (pk-list k))))))
+
+(define pkc-list
+  (lambda (k)
+    (reverse-list (pkc-list-in k))))
+
+(define pkc-length
+  (lambda (k)
+    (if (= 2 k)
+      1
+      (inexact->exact
+        (/ (- (expt k 2) 4) 2)))))
+
+(define pkc-steps
+  (lambda (k)
+    (if (= k 2)
+      1
+      (- (* 2 (pk-steps k)) 2))))
+
+
+;;returns a list of the first element of each list in a list of list
+(define list-first-elems
+  (lambda (listes)
+    (if (null? listes)
+      '()
+      (cons (car (car listes)) (list-first-elems (cdr listes))))))
+
+(define merge-patterns-in
+  (lambda (listes nb-iter)
+    (if (not (> nb-iter 0))
+      '()
+      (append (list-first-elems listes)
+              (merge-patterns-in (map rotate-list listes) (- nb-iter 1))))))
+
+(define merge-patterns
+  (lambda (pat1 . pat-reste)
+    (merge-patterns-in (append (list pat1) pat-reste) 
+                       (PPCM-list (map length (append (list pat1)
+                                                      pat-reste))))))
+
+
+(define pattern-steps
+  (lambda (pat k)
+    (cond ((eq? pat sk)
+           (sk-steps k))
+          ((eq? pat nk)
+           (nk-steps k))
+          ((eq? pat ik)
+           (ik-steps k))
+          ((eq? pat pk)
+           (pk-steps k))
+          ((eq? pat nkc)
+           (nkc-steps k))
+          ((eq? pat ikc)
+           (ikc-steps k))
+          ((eq? pat pkc)
+           (pkc-steps k)))))
+
+(define pattern-length
+  (lambda (pat k)
+    (cond ((eq? pat sk)
+           (sk-length k))
+          ((eq? pat nk)
+           (nk-length k))
+          ((eq? pat ik)
+           (ik-length k))
+          ((eq? pat pk)
+           (pk-length k))
+          ((eq? pat nkc)
+           (nkc-length k))
+          ((eq? pat ikc)
+           (ikc-length k))
+          ((eq? pat pkc)
+           (pkc-length k)))))
+
+
+
+(define pattern-pair
+  (lambda (pattern k)
+    (cond ((eq? k 0)
+            (pattern-pair (+ k 2)))
+          ((eq? pattern ik)
+            (if (not (odd? k))
+              (list pattern (- k 1))
+              (list pattern k)))
+          ((eq? pattern ikc)
+            (if (not (odd? k))
+              (list pattern (- k 1))
+              (list pattern k)))
+          ((eq? pattern pk)
+            (if (not (even? k))
+              (if (= k 1)
+                (list pattern 2)
+                (list pattern (- k 1)))
+              (list pattern k)))
+          ((eq? pattern pkc)
+            (if (= k 1)
+              (list pattern 2)
+              (if (not (even? k))
+                (list pattern (- k 1))
+                (list pattern k))))
+          (else
+            (list pattern k)))))
+
+
+(define reverse-composite-in
+  (lambda (lst nbiter)
+    (if (not (> nbiter 0))
+      lst
+      (reverse-composite-in (rotate-list lst) (- nbiter 1)))))
+
+(define reverse-composite
+  (lambda (lst)
+    (reverse-composite-in lst (inexact->exact (/ (length lst) 2)))))
+
+(define repeat-list
+  (lambda (lst n)
+    (if (not (> n 0))
+      '()
+      (append lst (repeat-list lst (- n 1))))))
+
+(define pattern-list
+  (lambda (pair)
+    (cond ((eq? (car pair) sk)
+           (sk-list (car (cdr pair))))
+          ((eq? (car pair) nk)
+           (nk-list (car (cdr pair))))
+          ((eq? (car pair) ik)
+           (ik-list (car (cdr pair))))
+          ((eq? (car pair) pk)
+           (pk-list (car (cdr pair))))
+          ((eq? (car pair) nkc)
+           (nkc-list (car (cdr pair))))
+          ((eq? (car pair) ikc)
+           (ikc-list (car (cdr pair))))
+          ((eq? (car pair) pkc)
+           (pkc-list (car (cdr pair)))))))
+
+(define composite-nb-termes
+  (lambda (pair-lst)
+    (if (eq? ( cdr pair-lst) '())
+      (pattern-steps (car (car pair-lst)) (car (cdr (car pair-lst)))))
+      (PPCM-in (pattern-steps (car (car pair-lst)) (car (cdr (car pair-lst)))) 
+               (map (lambda (pair) 
+                     (pattern-steps (car pair)
+                                    (car (cdr pair))))
+                    (cdr pair-lst)))))
+
+
+
+
+
+(define composite-nb-steps
+  (lambda (pair-lst)
+    (* (length pair-lst) (composite-nb-termes pair-lst))))
+
+(define composite-nb-rep
+  (lambda (pat-pair pair-lst)
+      (/ (composite-nb-termes pair-lst) 
+         (pattern-steps (car pat-pair)
+                        (car (cdr pat-pair))))))
+
+
+(define composite-length
+  (lambda (pair-lst)
+    (foldl + 0 (map (lambda (pair) 
+                      (* (composite-nb-rep pair pair-lst) 
+                         (pattern-length (car pair) (car (cdr pair)))))
+                    pair-lst))))
+
+
+
+
+
+(define print-composite
+  (lambda (composite)
+    (if (null? composite)
+      "" 
+      (string-append 
+                     (symbol->string (car (car composite))) 
+                     "-" 
+                     (number->string (car (cdr (car composite)))) 
+                     ";"
+                     (print-composite (cdr composite))))))
+
+(define print-pattern
+  (lambda (composite)
+    (println (print-composite composite) "-> Termes:" 
+                               (composite-nb-termes composite) 
+                               "| length: "
+                               (composite-length composite))))
+
+(define expose-patterns
+  (lambda (composites)
+    (if (not (null? composites))
+      (begin
+        (print-pattern (car composites))
+        (expose-patterns (cdr composites))))))
+
+(define generate-composites
+  (lambda (pair-lst nb-pat)
+    (generate-composites-in pair-lst nb-pat pair-lst)))
+
+(define generate-patterns
+  (lambda (sym-lst k)
+    (map (lambda (x) (list x)) (generate-patterns-up-to-k sym-lst k))))
+
+(define generate-patterns-k
+  (lambda (pat-lst k)
+    (map (lambda (pat) (pattern-pair pat k)) pat-lst)))
+
+(define generate-patterns-up-to-k
+  (lambda (pat-lst k)
+    (if (> k 0)
+      (append (generate-patterns-k pat-lst k)
+              (generate-patterns-up-to-k pat-lst (- k 1)))
+      '())))
+
+(define append-one-to-all
+  (lambda (cmp-lst pat)
+    (map (lambda (cmp)
+           (append cmp pat))
+         cmp-lst)))
+
+(define append-all-to-all
+  (lambda (cmp-lst pat-lst)
+    (foldl append '() (map (lambda (pat) (append-one-to-all cmp-lst pat)) pat-lst))))
+
+
+
+
+(define append-all-to-all-n-times-in
+  (lambda (comp-lst n pat-lst)
+    (if (<= n 1)
+      comp-lst
+      (append comp-lst
+              (append-all-to-all-n-times-in 
+                (append comp-lst (append-all-to-all comp-lst pat-lst))
+                (- n 1)
+                pat-lst)))))
+
+(define generate
+  (lambda (pat-lst k n)
+    (append-all-to-all-n-times-in (generate-patterns pat-lst k)
+                                  n
+                                  (generate-patterns pat-lst k))))
+
+
+
+;; utiliser rotate-list pour ajouter un nbiter de fois chaque termes
+)
+
+
+;(define composite-generation 
+;  (lambda (composites k nbgen)
+;    (if (= nbgen 0)
+;      '()
+;      (map (lambda (pat)
+;             (generate-patterns-up-to-k '(sk pk ikc) k)
+;
+;(define generate-n-terms-patterns
+;  (lambda (lst-sym k-max nb-termes)
+;    (generate-n-terms-patterns-in lst-sym k-max nb-termes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,246 @@
+
+
+
+;;shamelessely stolen from 
+;; http://stackoverflow.com/questions/15871042/how-do-i-find-the-index-of-an-element-in-a-list-in-racket
+
+;;with a few fixes for compatibility
+(define (index-of lst ele)
+  (let loop ((lst lst)
+             (idx 0))
+    (cond ((null? lst) #f)
+          ((equal? (car lst) ele) idx)
+          (else (loop (cdr lst) (+ idx 1))))))
+
+(define play-list
+  (lambda (time instr evt-lst dur-lst velo-lst)
+    (if (not (eq? '() evt-lst))
+      (begin
+        (play-note time instr (car evt-lst) (car velo-lst) (car dur-lst))
+        (callback (+ time (car dur-lst)) 'play-list (+ time (car dur-lst))
+                                                    instr
+                                                    (cdr evt-lst)
+                                                    (cdr dur-lst)
+                                                    (cdr velo-lst))))))
+
+
+
+
+
+(define random-instrument
+  (lambda ()
+    (random (list 
+      frigo-pair 
+      papier-pair))))
+
+
+
+
+;;liste de paires!
+
+(define play-instrument-list
+  (lambda (time instr-lst dur-lst velo-lst)
+    (if (not (eq? '() dur-lst))
+      (begin
+        (play-note time (caar instr-lst) (+ 10 (random (cadar instr-lst))) (car velo-lst) (car dur-lst))
+        (callback (+ time (car dur-lst)) 'play-instrument-list (+ time (car dur-lst))
+                                                    (cdr instr-lst)
+                                                    (cdr dur-lst)
+                                                    (cdr velo-lst))))))
+
+(define play-instrument-list-cut
+  (lambda (time instr-lst dur-lst velo-lst cut)
+    (if (not (eq? '() dur-lst))
+      (begin
+        (play-note time (caar instr-lst) (+ 10 (random (cadar instr-lst))) (car velo-lst) (car dur-lst))
+        (callback (+ time (car dur-lst)) 'play-instrument-list (+ time (car dur-lst))
+                                                    (cdr instr-lst)
+                                                    (cdr dur-lst)
+                                                    (cdr velo-lst))))))
+
+
+;(define liste-instruments (list pot-pair misc-pair bricket-pair pot-pair))
+;(liste-instruments)
+;(cadar liste-instruments)
+;(play-instrument-list (now) liste-instruments '(22050 22050 22050 22050) '(100 100 100 100))
+
+;(play-n-times-instrument (now) liste-instruments '(22050 22050 22050 22050) '(100 100 100 100) 4)
+
+(define repeat-list
+  (lambda (lst nb-repeat)
+    (if (> nb-repeat 0)
+      (append lst (repeat-list lst (- nb-repeat 1)))
+      '())))
+
+
+(define play-n-times-instrument
+  (lambda (time instr-lst dur-lst velo-lst n)
+    (if (> n 0)
+      (begin
+        (play-instrument-list time instr-lst dur-lst velo-lst)
+        (callback (+ time (sum-of-list dur-lst 0))
+                  'play-n-times-instrument
+                  (+ time (sum-of-list dur-lst 0))
+                  instr-lst
+                  dur-lst
+                  velo-lst
+                  (- n 1))))))
+
+(define play-n-times
+  (lambda (time instr evt-lst dur-lst velo-lst n)
+    (if (> n 0)
+      (begin
+        (play-list time instr evt-lst dur-lst velo-lst)
+        (callback (+ time (sum-of-list dur-lst 0))
+                  'play-n-times
+                  (+ time (sum-of-list dur-lst 0))
+                  instr
+                  evt-lst
+                  dur-lst
+                  velo-lst
+                  (- n 1))))))
+
+
+
+(define rotate-list
+  (lambda (lst)
+    (append (cdr lst) (list (car lst)))))
+
+(define list-of-constant
+  (lambda (n constant)
+    (if (= 0 n)
+      '()
+      (append (list constant) (list-of-constant (- n 1) constant)))))
+
+
+;nettoyer: remplacer sum-of-list n par sum of list tout court
+(define sum-of-list-in
+  (lambda (lst sum)
+    (if (eq? lst '())
+      sum
+      (sum-of-list-in (cdr lst) (+ sum (car lst))))))
+
+(define sum-of-list
+  (lambda (lst)
+    (sum-of-list-in lst 0)))
+
+(define reverse-list
+  (lambda (lst)
+    (if (eq? lst '())
+      '()
+      (append (reverse-list (cdr lst)) (list (car lst))))))
+
+(define zip-lists-in
+  (lambda (lst rlst)
+    (if (null? rlst)
+      '()
+      (append (cons (car lst) (remove-nulls-from-list (map (lambda (x) (car x)) rlst)))
+              (zip-lists-in (cdr lst)  
+                            (remove-nulls-from-list (map (lambda (x) (cdr x)) rlst)))))))
+            
+(define zip-lists
+  (lambda (lst . rlst)
+    (zip-lists-in lst rlst)))
+
+(define remove-nulls-from-list
+  (lambda (lst)
+    (if (null? lst)
+      '()
+      (if (eq? '() (car lst))
+        (remove-nulls-from-list (cdr lst))
+        (cons (car lst) (remove-nulls-from-list (cdr lst)))))))
+
+
+(define n-first-integers
+  (lambda (n)
+    (if (<= n 0)
+      '()
+      (append (n-first-integers (- n 1)) (list n)))))
+
+(define line-list
+  (lambda (origin destination lgth)
+    (map (lambda (x) 
+           (exact->inexact (+ origin 
+              (* (- destination 
+                    origin)
+                 (/ x lgth)))))
+         (n-first-integers lgth))))
+
+(define transition-in 
+  (lambda (origin-lst dest-lst time length)
+    (if (and (not (null? origin-lst)) (not (null? dest-lst)))
+      (if (>= time length)
+        (append (list (car dest-lst)) (transition-in (cdr origin-lst) 
+                                                     (cdr dest-lst) 
+                                                     time
+                                                     length))
+        (let ((new-dur (+ (car origin-lst)
+                          (* (- (car dest-lst)
+                                (car origin-lst))
+                             (/ time length)))))
+          (begin 
+          (println '===)
+          (println (round new-dur))
+          (println (car origin-lst))
+          (println (car dest-lst))
+          (println (exact->inexact time))
+          (println (exact->inexact length))
+
+          (println (exact->inexact new-dur))
+          (append (list (inexact->exact (round new-dur))) (transition-in (cdr origin-lst) 
+                                                (cdr dest-lst) 
+                                                (exact->inexact (+ time new-dur))
+                                                length))))))))
+
+
+
+
+(define transition
+  (lambda (origin-lst dest-lst length)
+    (transition-in origin-lst dest-lst 0 length)))
+
+(define merge-into-in
+  (lambda (lst1 lst2 n lgth)
+      (if (null? lst1)
+          '()
+          (append (list (+ (* (car lst1) (/ (- lgth n)
+                                      lgth))
+                        (* (car lst2) (/ n lgth))))
+                  (merge-into-in (cdr lst1) (cdr lst2) (+ n 1) lgth)))))
+
+
+(define merge-into
+  (lambda (lst1 lst2)
+    (if (= (length lst1) (length lst2))
+        (merge-into-in lst1 lst2 0 (length lst1))
+      (begin
+        (println "error : len(lst1) != len(lst2): returned \'()")
+        '()))))
+
+;; trace macro provided by Andrew Sorensen on the google group discussion:
+;; https://groups.google.com/forum/#!searchin/extemporelang/trace/extemporelang/hny9V1KYeUQ/_A--EfD4DQAJ
+
+(define-macro (trace name)
+  (let ((tmpname (string->symbol (string-append (symbol->string name) "_tmp"))))
+    (if (and (defined? tmpname)
+             (eval tmpname))
+        (println 'Already 'tracing name)
+        `(begin (define ,tmpname ,name)
+                (define ,name
+                  (let ((cnt 0))
+                    (lambda args
+                      (set! cnt (+ cnt 1))
+                      (println (string->symbol (apply string-append (make-list cnt ">"))) (cons ',name args))
+                      (let ((out (apply ,tmpname args)))                    
+                        (println (string->symbol (apply string-append (make-list cnt "<"))) out)
+                        (set! cnt (- cnt 1))                        
+                        out))))))))
+
+
+(define-macro (untrace name)
+  (let ((tmpname (string->symbol (string-append (symbol->string name) "_tmp"))))
+    `(if ,tmpname 
+         (begin
+           (define ,name ,tmpname)
+           (define ,tmpname #f)))))
+

@@ -1,0 +1,443 @@
+
+(begin
+(define step (/ 7560 2))
+(define 4-4
+  '(100 60 80 60))
+
+(define 3-4
+  '(100 60 75))
+
+;;;pre-definitions
+;(define block2-pattern1
+;  (repeat-list (merge-patterns (pattern-list (pattern-pair nkc 5))
+;                               (reverse-list (pattern-list (pattern-pair ikc 5)))
+;                               (pattern-list (pattern-pair sk 2))) 2))
+;
+;(define block2-pattern1-dur
+;  (map (lambda (x) (* x step)) block2-pattern1))
+;
+
+
+;;beat 4-4
+(define block0-pattern1
+  (list-of-constant 16 4))
+
+
+
+(define block0-instrument1
+  (map (lambda (x) pot-pair) block0-pattern1))
+
+(define block0-pattern1-dur
+  (map (lambda (x) (* x step)) block0-pattern1))
+
+(define block0-pattern1-velo
+  (repeat-list 4-4 4))
+
+(define block0b-pattern1
+  (list-of-constant 16 4))
+
+(define block0b-instrument1
+  (zip-lists
+    (list-of-constant 8 guitAm-pair)
+    (list-of-constant 8 mirror-pair)))
+
+(define block0b-pattern1-dur
+  (map (lambda (x) (* x step)) block0b-pattern1))
+
+(define block0b-pattern1-velo
+  (repeat-list 4-4 4))
+
+;;transition
+;(define block1-pattern1
+;  (transition (repeat-list block0-pattern1-dur 18) 
+;              block2-pattern1-dur 
+;              (sum-of-list (repeat-list block2-pattern1-dur 1))))
+
+(define block1-pattern1
+  (morph-list-stretch block0-pattern1 
+              block2-pattern1 2))
+
+;(length (repeat-list block0-pattern1-dur 6))
+;
+;(/ 288 96)
+;
+;(length block1-pattern1-dur)
+;
+;(sum-of-list (repeat-list block0-pattern1-dur 6))
+;(sum-of-list (repeat-list block2-pattern1-dur 1))
+
+
+(define block1-instrument1
+  (map (lambda (x) pot-pair) block1-pattern1))
+
+
+(define block1-pattern1-dur
+  (map (lambda (x) (inexact->exact (round (* x step)))) block1-pattern1))
+
+(define block1-pattern1-velo
+  (map (lambda (x y) 
+         (inexact->exact (round (/ (* x y) 100)))) 
+       (line-list 100 50 (length block1-pattern1))
+       (repeat-list 4-4 (/ (length block1-pattern1) 4))))
+
+(define block1-pattern2
+  (normalize-list (morph-list block0b-pattern1
+                              block2-pattern2) 
+                  block1-pattern1))
+
+(define block1-instrument2
+  (zip-lists
+    (list-of-constant (inexact->exact (round (/ (length block1-pattern2) 2)))
+                      guitAm-pair)
+    (list-of-constant (inexact->exact (round (/ (length block1-pattern2) 2))) 
+                      mirror-pair)))
+
+(define block1-pattern2-dur
+  (map (lambda (x) (inexact->exact (round (* x step)))) block1-pattern2))
+
+(define block1-pattern2-velo
+  (repeat-list 4-4 (/ (length block1-pattern2) 4)))
+
+
+;;beat 552
+;(define block2-pattern1
+;  (transition (map (lambda (x) (* x step)) 
+;                  (repeat-list (merge-patterns (pattern-list (pattern-pair nkc 5))
+;                                               (reverse-list (pattern-list (pattern-pair ikc 5)))
+;                                               (pattern-list (pattern-pair sk 2))) 4))
+;              (map (lambda (x) (* x step)) (list-of-constant 96 8))
+;              (* step (* 8 96))))
+
+(define block2-pattern1
+  (repeat-list (merge-patterns (pattern-list (pattern-pair nkc 5))
+                               (reverse-composite (pattern-list (pattern-pair ikc 5)))
+                               (pattern-list (pattern-pair sk 2))) 2))
+
+
+(define block2-instrument1
+  (map (lambda (x) pot-pair) block2-pattern1))
+
+
+;(define block2-instrument1
+;  (zip-lists (list-of-constant 48 pot-pair) (list-of-constant 48 bricket-pair)))
+
+
+
+(define block2-pattern1-dur
+  (map (lambda (x) (* x step)) block2-pattern1))
+
+(define block2-pattern1-velo
+  (repeat-list 3-4 32))
+
+;"sk-8;ik-7;ik-7;" "-> Termes:" 4 "| length: " 64
+;(define block2-pattern2
+;  (transition (repeat-list (merge-patterns (pattern-list (pattern-pair sk 8))
+;                  ;(reverse-list (pattern-list (pattern-pair ik 7)))
+;                  (pattern-list (pattern-pair ik 7))
+;                  (pattern-list (pattern-pair ik 7))) 4)
+;              (list-of-constant 8 32)
+;              (* step 256)))
+;(define block2-pattern2
+;  (transition (map (lambda (x) (* x step)) 
+;                  (repeat-list (merge-patterns (pattern-list (pattern-pair sk 8))
+;                  ;(reverse-list (pattern-list (pattern-pair ik 7)))
+;                  (pattern-list (pattern-pair ik 7))
+;                  (pattern-list (pattern-pair ik 7))) 4))
+;              (map (lambda (x) (* x step)) (list-of-constant 48 16))
+;              (* step (* 48 16 ))))
+
+(define block2-pattern2
+  (repeat-list (merge-patterns (pattern-list (pattern-pair sk 8))
+                  ;(reverse-list (pattern-list (pattern-pair ik 7)))
+                  (pattern-list (pattern-pair ik 7))
+                  (pattern-list (pattern-pair ik 7))) 2))
+
+;(define block2-instrument2
+;  (map (lambda (x) guitAm-pair) block2-pattern2))
+(define block2-instrument2
+  (append (list-of-constant 6 guitF-pair )
+          (list-of-constant 6 guitAm-pair )
+          (list-of-constant 6 guitC-pair )
+          (list-of-constant 6 guitF-pair )))
+
+(define block2-pattern2-dur
+  (map (lambda (x) (* x step)) block2-pattern2))
+
+(define block2-pattern2-velo
+  (repeat-list 3-4 16))
+
+
+;;beat 552
+(define block3-pattern1
+  (merge-patterns (pattern-list (pattern-pair nkc 5))
+                  (reverse-list (pattern-list (pattern-pair ikc 5)))
+                  (pattern-list (pattern-pair sk 2))))
+
+
+
+(define block3-instrument1
+  (map (lambda (x) pot-pair) block3-pattern1))
+
+(define block3-pattern1-dur
+  (map (lambda (x) (* x (/ step 3))) block3-pattern1))
+
+(define block3-pattern1-velo
+  (line-list 80 0 24))
+
+;;sk-8;ik-7;ik-7;
+(define block3-pattern2
+  (merge-patterns (pattern-list (pattern-pair sk 8))
+                  ;(reverse-list (pattern-list (pattern-pair ik 7)))
+                  (pattern-list (pattern-pair ik 7))
+                  (pattern-list (pattern-pair ik 7))))
+
+
+(define block3-instrument2
+  (map (lambda (x) guitAm-pair) block3-pattern2))
+
+(define block3-pattern2-dur
+  (map (lambda (x) (* x (/ step 3))) block3-pattern2))
+
+(define block3-pattern2-velo
+  (map (lambda (x) (inexact->exact (round x))) 
+       (line-list 100 60 (length block3-pattern2))))
+
+;;crazy chords
+(define block3-pattern3
+  (merge-patterns (pattern-list (pattern-pair sk 8))
+                  (reverse-list (pattern-list (pattern-pair ik 7)))
+                  ;(pattern-list (pattern-pair ik 7))
+                  (pattern-list (pattern-pair ik 7))))
+
+(define block3-instrument3
+  (map (lambda (x) piano_chord_prog1-pair) block3-pattern3))
+
+(define block3-pattern3-dur
+  (map (lambda (x) (* x (/ step 3))) block3-pattern3))
+
+
+(define block3-pattern3-velo
+  (line-list 0 100 12))
+
+
+;(define block4-pattern1
+;  (repeat-list (merge-patterns (pattern-list (pattern-pair nkc 5))
+;                  (reverse-list (pattern-list (pattern-pair ikc 5)))
+;                  (pattern-list (pattern-pair sk 2))) 2))
+
+(define block4-pattern1
+  (list-of-constant 256 1))
+
+
+
+(define block4-instrument1
+  (map (lambda (x) ting-pair) block4-pattern1))
+
+(define block4-pattern1-dur
+  (map (lambda (x) (* x (/ step 1))) block4-pattern1))
+
+;(define block4-pattern1-velo
+;  (map * (repeat-list 4-4 16) (line-list 0 1 64)))
+
+
+;;REGLER BUG ICI !!!!!
+
+;;le length de block4-pattern1-velo devrait etre = a len(block4-pattern1)
+;;et ne devrait pas faire crasher extempore!
+(define block4-pattern1-velo
+  (map * 
+      (repeat-list 4-4 (/ (length block4-pattern1) 4)) 
+      (line-list 0 1 (length block4-pattern1))))
+
+
+(block4-pattern1)
+(block4-pattern1-velo)
+
+
+;;sk-8;ik-7;ik-7;
+;(define block4-pattern2
+;  (merge-patterns (pattern-list (pattern-pair sk 8))
+;                  ;(reverse-lst (pattern-list (pattern-pair ik 7)))
+;                  (pattern-list (pattern-pair ik 7))
+;                  (pattern-list (pattern-pair ik 7))))
+
+(define block4-pattern2
+  (repeat-list (append (reverse-list (pattern-list (pattern-pair ik 15)))
+          (pattern-list (pattern-pair ik 15))) 2))
+
+
+(define block4-instrument2
+  (map (lambda (x) guitAm-pair) block4-pattern2))
+
+(define block4-pattern2-dur
+  (map (lambda (x) (* x (/ step 1))) block4-pattern2))
+
+(define block4-pattern2-velo
+  (map (lambda (x y) 
+         (inexact->exact (round (* x y)))) 
+       (repeat-list 4-4 (/ (length block4-pattern2) 4)) 
+       (line-list 1 0 (length block4-pattern2))))
+
+
+(define block4-pattern3
+  (repeat-list (merge-patterns (pattern-list (pattern-pair sk 8))
+                  (reverse-list (pattern-list (pattern-pair ik 7)))
+                  ;(pattern-list (pattern-pair ik 7))
+                  (pattern-list (pattern-pair ik 7))) 2))
+
+(define block4-instrument3
+  (map (lambda (x) D_bass_surf-pair) block4-pattern3))
+
+(define block4-pattern3-dur
+  (map (lambda (x) (* x (* step 2))) block4-pattern3))
+
+(define block4-pattern3-velo
+  (map (lambda (x y) (* x y))
+       (repeat-list 3-4 (/ (length block4-pattern3) 3))
+       (line-list 0 0.5 (length block4-pattern3))))
+
+
+
+(define block4b-pattern1
+  (append (pattern-list (pattern-pair ik 15))
+          (reverse-list (pattern-list (pattern-pair ik 15)))))
+
+(define block4b-instrument1
+  (map (lambda (x) ting-pair) block4b-pattern1))
+
+(define block4b-pattern1-dur
+  (map (lambda (x) (* x (/ step 1))) block4b-pattern1))
+
+(define block4b-pattern1-velo
+  (repeat-list 4-4 32))
+
+;(inexact->exact (round (/ 201000 16)))
+
+;758152
+;;47384
+;;23692
+
+
+(define block5-pattern1
+  (list-of-constant 18 4))
+(define block5-instrument1
+  (map (lambda (x) ting-pair) block5-pattern1))
+(define block5-pattern1-dur
+  (map (lambda (x) (* x step)) block5-pattern1))
+(define block5-pattern1-velo
+  (repeat-list 3-4 6))
+
+(define block5-pattern2
+  (reverse-list (merge-patterns (pattern-list (pattern-pair ik 15))
+                                (pattern-list (pattern-pair sk 1)))))
+(define block5-instrument2
+  (map (lambda (x) D_bass_surf-pair) block5-pattern2))
+
+(define block5-pattern2-dur
+  (map (lambda (x) (* x step)) block5-pattern2))
+(define block5-pattern2-velo
+  (repeat-list 4-4 4))
+
+;"nk-8;nk-8;" "-> Termes:" 8 "| length: " 72
+;"nkc-5;nkc-3;ikc-7;" "-> Termes:" 24 "| length: " 216
+(define block5-pattern3
+  (repeat-list (reverse-list (merge-patterns (pattern-list (pattern-pair nk 8))
+                                (pattern-list (pattern-pair nk 8))))2 ))
+(define block5-instrument3
+  (map (lambda (x) melo2_piano-pair) block5-pattern3))
+
+(define block5-pattern3-dur
+  (map (lambda (x) (* x step 2)) block5-pattern3))
+(define block5-pattern3-velo
+  (repeat-list 4-4 4))
+
+
+;"pkc-8;sk-7;" "-> Termes:" 6 "| length: " 72
+(define block6-pattern1
+  (morph-list-stretch block5-pattern1
+                      block7-pattern1
+                      1))
+
+;(/ (sum-of-list block6-pattern2) (sum-of-list block6-pattern1))
+
+
+(define block6-instrument1
+  (map (lambda (x) ting-pair) block6-pattern1))
+(define block6-pattern1-dur
+  (map (lambda (x) (inexact->exact (round (* x step)))) block6-pattern1))
+
+
+(define block6-pattern1-velo
+  (repeat-list 4-4 (/ (length block6-pattern1) 4)))
+
+
+
+(define block6-pattern2
+  ;(reverse-list (merge-patterns (pattern-list (pattern-pair ik 15))
+  ;                              (pattern-list (pattern-pair sk 1)))))
+  (normalize-list (morph-list-stretch block5-pattern1
+                                      block7-pattern2
+                                      1)
+                  block6-pattern1))
+
+
+
+(define block6-instrument2
+  (map (lambda (x) D_bass_surf-pair) block6-pattern2))
+
+(define block6-pattern2-dur
+  (map (lambda (x) (* (inexact->exact (round x)) step)) block6-pattern2))
+(define block6-pattern2-velo
+  (repeat-list 4-4 (/ (length block6-instrument2) 4)))
+
+;"nk-8;nk-8;" "-> Termes:" 8 "| length: " 72
+;"nkc-5;nkc-3;ikc-7;" "-> Termes:" 24 "| length: " 216
+(define block6-pattern3
+  (normalize-list (repeat-list (reverse-list (merge-patterns (pattern-list (pattern-pair nk 8))
+                                (pattern-list (pattern-pair nk 8))))2 )
+                  block6-pattern1))
+(define block6-instrument3
+  (map (lambda (x) pot-pair) block6-pattern3))
+
+
+
+
+(define block6-pattern3-dur
+  (map (lambda (x) (inexact->exact (round (* x step)))) block6-pattern1))
+(define block6-pattern3-velo
+   (repeat-list 4-4 (/ (length block6-instrument3) 4)))
+
+(define block7-pattern1
+  (merge-patterns 
+                (pattern-list (pattern-pair pkc 8))
+                (pattern-list (pattern-pair sk 7))))
+
+(define block7-instrument1
+  (map (lambda (x) ting-pair) block7-pattern1))
+(define block7-pattern1-dur
+  (map (lambda (x) (* x step)) block7-pattern1))
+(define block7-pattern1-velo
+  (repeat-list 3-4 4))
+
+(define block7-pattern2
+  (list-of-constant 18 4))
+(define block7-instrument2
+  (map (lambda (x) guitAm-pair) block7-pattern2))
+(define block7-pattern2-dur
+  (map (lambda (x) (* x step)) block7-pattern2))
+(define block7-pattern2-velo
+  (repeat-list 3-4 6))
+
+(define block7-pattern3
+  (list-of-constant 24 3))
+(define block7-instrument3
+  (map (lambda (x) piano_D5-pair) block7-pattern3))
+(define block7-pattern3-dur
+  (map (lambda (x) (* x step)) block7-pattern3))
+(define block7-pattern3-velo
+  (repeat-list 4-4 6))
+
+
+
+)
+

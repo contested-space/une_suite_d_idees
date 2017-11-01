@@ -1,0 +1,1215 @@
+(sys:load "libs/external/instruments_ext.xtm")
+;(sys:load "libs/core/instruments.xtm")
+(sys:load "/home/fabien/Desktop/extempore_code/fablib.xtm")
+
+
+(bind-instrument synth synth_note_c synth_fx)
+
+
+(sys:load "/home/fabien/Desktop/creation_projet2/fab_samples.xtm")
+(sys:load "/home/fabien/Desktop/creation_projet2/calculator.xtm")
+
+
+
+(bind-func dsp:DSP
+  (lambda (in time chan dat)
+    (+ ;;(synth in time chan dat)
+       ;;(* 11.0 (misc in time chan dat))
+       ;;(* 10.0 (armoire in time chan dat))
+       ;(* 0.5 (bricket in time chan dat))
+       ;;(* 15.0 (frigo in time chan dat))
+       (* 6.0 (guitAm in time chan dat))
+       (* 5.0 (guitC in time chan dat))
+       (* 10.0 (guitF in time chan dat))
+       (* 5.0 (guitE in time chan dat))
+       (* 5.0 (frottement in time chan dat))
+       (* 5.0 (mirror in time chan dat))
+       ;(* 1.0 (papier in time chan dat))
+       (* 0.5 (pot in time chan dat))
+       ;(* 1.0 (tac in time chan dat))
+       (* 0.5 (ting in time chan dat))
+       ;(* 8.0 (touc in time chan dat))
+       (* 5.0 (piano_D5 in time chan dat))
+       (* 4.0 (piano_high_percu in time chan dat))
+       (* 3.0 (piano_chord_prog1 in time chan dat))
+       (* 1.0 (piano_notes_graves_A in time chan dat))
+       (* 2.0 (piano_broken_melo1 in time chan dat))
+       (* 10.0 (melo1_piano in time chan dat))
+       (* 1.0 (melo2_piano in time chan dat))
+       (* 1.0 (chords1_piano in time chan dat))
+       (* 1.5 (D_bass_surf in time chan dat)))))
+
+
+(dsp:set! dsp)
+
+
+
+(play-note (now) synth 60 80 44100)
+(play-note (now) armoire 10 80 44100)
+(play-note (now) bricket 10 80 44100)
+(play-note (now) misc 10 80 44100)
+(play-note (now) frigo 10 80 44100)
+(play-note (now) guitAm 10 80 44100)
+(play-note (now) guitC 10 80 44100)
+(play-note (now) guitF 10 80 44100)
+(play-note (now) guitE 10 80 44100)
+(play-note (now) frottement 10 80 44100)
+(play-note (now) mirror 10 80 44100)
+(play-note (now) papier 10 80 44100)
+(play-note (now) pot 10 80 44100)
+(play-note (now) tac 10 80 44100)
+(play-note (now) ting 10 80 44100)
+(play-note (now) touc 10 80 44100)
+(play-note (now) piano_D5 10 80 44100)
+(play-note (now) piano_high_percu 10 80 44100)
+(play-note (now) piano_chord_prog1 10 80 44100)
+(play-note (now) piano_notes_graves_A 10 80 44100)
+(play-note (now) piano_broken_melo1 10 80 379076)
+(play-note (now) melo1_piano 10 80 44100)
+(play-note (now) melo2_piano 10 80 44100)
+(play-note (now) chords1_piano 10 80 44100)
+(play-note (now) D_bass_surf 10 80 44100)
+
+;;pattern 1 : 552
+
+;nk-8;pk-4;pk-8;
+;pk-8;ikc-5;nk-8
+
+
+;;7560 = 2^3×3^3×5×7  (8 prime factors, 4 distinct)
+(define step (/ 7560 2))
+
+
+
+
+(block0 (now))
+
+(begin
+
+(define block0
+  (lambda (time)
+    (let ((nb-loop 1) 
+          (instr block0-instrument1) 
+          (pat-dur block0-pattern1-dur) 
+          (pat-velo block0-pattern1-velo))
+      (begin
+        (println "block0")
+        (play-n-times-instrument time instr 
+                                      pat-dur 
+                                      pat-velo nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list pat-dur ))) 
+                 'block0b (+ time (* nb-loop (sum-of-list pat-dur ))))))))
+
+(define block0b
+  (lambda (time)
+    (let ((nb-loop 1) 
+          (instr block0-instrument1) 
+          (pat-dur block0-pattern1-dur) 
+          (pat-velo block0-pattern1-velo)
+          (instr2 block0b-instrument1) 
+          (pat-dur2 block0b-pattern1-dur) 
+          (pat-velo2 block0b-pattern1-velo))
+      (begin
+        (println "block0b")
+        (play-n-times-instrument time instr 
+                                      pat-dur 
+                                      pat-velo nb-loop)
+        (play-n-times-instrument time instr2 
+                                      pat-dur2 
+                                      pat-velo2 nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list pat-dur ))) 
+                 'block1 (+ time (* nb-loop (sum-of-list pat-dur ))))))))
+
+
+
+(define block1
+  (lambda (time)
+    (let ((nb-loop 1) 
+          (instr block1-instrument1) 
+          (pat-dur block1-pattern1-dur) 
+          (pat-velo block1-pattern1-velo)
+          (instr2 block1-instrument2) 
+          (pat-dur2 block1-pattern2-dur) 
+          (pat-velo2 block1-pattern2-velo))
+      (begin
+        (println "block1")
+        (play-n-times-instrument time instr 
+                                      pat-dur 
+                                      pat-velo nb-loop)
+        (play-n-times-instrument time instr2 
+                                      pat-dur2 
+                                      pat-velo2 nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list pat-dur ))) 
+                 'block2 (+ time (* nb-loop (sum-of-list pat-dur ))))))))
+
+(define block2
+  (lambda (time)
+    (let ((nb-loop 1) 
+          (instr block2-instrument1) 
+          (pat-dur block2-pattern1-dur) 
+          (pat-velo block2-pattern1-velo)
+          (instr2 block2-instrument2) 
+          (pat-dur2 block2-pattern2-dur) 
+          (pat-velo2 block2-pattern2-velo))
+      (begin
+        (println "block2")
+        (play-n-times-instrument time instr 
+                                      pat-dur 
+                                      pat-velo nb-loop)
+        (play-n-times-instrument time instr2 
+                                      pat-dur2 
+                                      pat-velo2 nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list pat-dur ))) 
+                 'block3 (+ time (* nb-loop (sum-of-list pat-dur ))))))))
+
+(define block3
+  (lambda (time)
+    (let ((nb-loop 1) 
+          (instr block3-instrument1) 
+          (pat-dur block3-pattern1-dur) 
+          (pat-velo block3-pattern1-velo)
+          (instr2 block3-instrument2) 
+          (pat-dur2 block3-pattern2-dur) 
+          (pat-velo2 block3-pattern2-velo)
+          (instr3 block3-instrument3) 
+          (pat-dur3 block3-pattern3-dur) 
+          (pat-velo3 block3-pattern3-velo))
+      (begin
+        (println "block3")
+        (play-n-times-instrument time instr 
+                                      pat-dur 
+                                      pat-velo nb-loop)
+        (play-n-times-instrument time instr2 
+                                      pat-dur2 
+                                      pat-velo2 nb-loop)
+        (play-n-times-instrument time instr3 
+                                      pat-dur3 
+                                      pat-velo3 nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list pat-dur3 ))) 
+                 'block4 (+ time (* nb-loop (sum-of-list pat-dur3 ))))))))
+
+
+(define block4
+  (lambda (time)
+    (let ((nb-loop 1) 
+          (instr block4-instrument1) 
+          (pat-dur block4-pattern1-dur) 
+          (pat-velo block4-pattern1-velo)
+          (instr2 block4-instrument2) 
+          (pat-dur2 block4-pattern2-dur) 
+          (pat-velo2 block4-pattern2-velo)
+          (instr3 block4-instrument3) 
+          (pat-dur3 block4-pattern3-dur) 
+          (pat-velo3 block4-pattern3-velo))
+      (begin
+        (println "block4")
+        (play-n-times-instrument time instr 
+                                      pat-dur 
+                                      pat-velo nb-loop)
+        (play-n-times-instrument time instr2 
+                                      pat-dur2 
+                                      pat-velo2 nb-loop)
+        (play-n-times-instrument time instr3 
+                                      pat-dur3 
+                                      pat-velo3 nb-loop)
+        (play-note time piano_notes_graves_A 10 100 44100)
+        (play-note time D_bass_surf (+ 10 1) 100 441000)
+        (callback (+ time (* nb-loop (sum-of-list pat-dur ))) 
+                 'block4b (+ time (* nb-loop (sum-of-list pat-dur ))))))))
+
+
+(define block4b
+  (lambda (time)
+    (let ((nb-loop 1) 
+          (instr block4b-instrument1) 
+          (pat-dur block4b-pattern1-dur) 
+          (pat-velo block4b-pattern1-velo)
+          (instr2 block4-instrument2) 
+          (pat-dur2 block4-pattern2-dur) 
+          (pat-velo2 block4-pattern2-velo)
+          (instr3 block4-instrument3) 
+          (pat-dur3 block4-pattern3-dur) 
+          (pat-velo3 block4-pattern3-velo))
+      (begin
+        (println "block4b")
+        (play-n-times-instrument time instr 
+                                      pat-dur 
+                                      pat-velo nb-loop)
+        (play-n-times-instrument time instr2 
+                                      pat-dur2 
+                                      pat-velo2 nb-loop)
+        (play-n-times-instrument time instr3 
+                                      pat-dur3 
+                                      pat-velo3 nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list pat-dur ))) 
+                 'block5 (+ time (* nb-loop (sum-of-list pat-dur ))))))))
+
+
+(define block5
+  (lambda (time)
+    (let ((nb-loop 1)
+          (instr block5-instrument1) 
+          (pat-dur block5-pattern1-dur) 
+          (pat-velo block5-pattern1-velo)
+          (instr2 block5-instrument2) 
+          (pat-dur2 block5-pattern2-dur) 
+          (pat-velo2 block5-pattern2-velo)
+          (instr3 block5-instrument3) 
+          (pat-dur3 block5-pattern3-dur) 
+          (pat-velo3 block5-pattern3-velo))
+    (begin
+      (println "block5 : bridge melo!")
+      (play-n-times-instrument time instr 
+                                      pat-dur 
+                                      pat-velo nb-loop)
+      (play-n-times-instrument time instr2 
+                                      pat-dur2 
+                                      pat-velo2 nb-loop)
+      (play-n-times time (caar instr3) '(10 11 12 11 10 11 12 11 10 11 12 11 10 11 12 11)
+                                      pat-dur3 
+                                      pat-velo3 nb-loop)
+      (play-note (now) chords1_piano (+ 10 (random 25)) 100 201000)
+
+      (callback (+ time (* nb-loop (sum-of-list pat-dur ))) 
+                 'block6 (+ time (* nb-loop (sum-of-list pat-dur ))))))))
+
+(define block6
+  (lambda (time)
+    (let ((nb-loop 1)
+          (instr block6-instrument1) 
+          (pat-dur block6-pattern1-dur) 
+          (pat-velo block6-pattern1-velo)
+          (instr2 block6-instrument2) 
+          (pat-dur2 block6-pattern2-dur) 
+          (pat-velo2 block6-pattern2-velo)
+          (instr3 block6-instrument3) 
+          (pat-dur3 block6-pattern3-dur) 
+          (pat-velo3 block6-pattern3-velo))
+    (begin
+      (println "block6")
+      (play-n-times-instrument time instr 
+                                      pat-dur 
+                                      pat-velo nb-loop)
+      (play-n-times-instrument time instr2 
+                                      pat-dur2 
+                                      pat-velo2 nb-loop)
+      (play-n-times time (caar instr3) '(10 11 12 11 10 11 12 11 10 11 12 11 10 11 12 11)
+                                      pat-dur3 
+                                      pat-velo3 nb-loop)
+      (play-note (now) chords1_piano (+ 10 (random 25)) 100 201000)
+
+      (callback (+ time (* nb-loop (sum-of-list pat-dur ))) 
+                 'block7 (+ time (* nb-loop (sum-of-list pat-dur ))))))))
+
+(define block7
+  (lambda (time)
+    (let ((nb-loop 4)
+          (instr block7-instrument1) 
+          (pat-dur block7-pattern1-dur) 
+          (pat-velo block7-pattern1-velo)
+          (instr2 block7-instrument2) 
+          (pat-dur2 block7-pattern2-dur) 
+          (pat-velo2 block7-pattern2-velo)
+          (instr3 block7-instrument3) 
+          (pat-dur3 block7-pattern3-dur) 
+          (pat-velo3 block7-pattern3-velo))
+    (begin
+      (println "block7")
+      (play-n-times-instrument time instr 
+                                      pat-dur 
+                                      pat-velo nb-loop)
+      (play-n-times-instrument time instr2 
+                                      pat-dur2 
+                                      pat-velo2 nb-loop)
+      (play-n-times-instrument time instr3
+                                      pat-dur3 
+                                      pat-velo3 nb-loop)
+      (play-note (now) chords1_piano (+ 10 (random 25)) 100 201000)
+
+      (callback (+ time (* nb-loop (sum-of-list pat-dur ))) 
+                 'blockpi (+ time (* nb-loop (sum-of-list pat-dur ))))))))
+)
+
+
+;;(/ 758152 4)
+;;189538
+(block0 (now))
+
+
+
+
+(define block2-pattern1
+  (transition (list-of-constant 16 4))
+
+(define block2-instrument1
+  (map (lambda (x) touc-pair) block2-pattern1))
+
+(define block2-pattern1-dur
+  (map (lambda (x) (* x step)) block2-pattern1))
+
+(define block2-pattern1-velo
+  (repeat-list 4-4 4))
+
+
+
+
+
+(define pattern-4-64
+  (list-of-constant 16 4))
+
+(define pattern-4-72
+  (list-of-constant 24 4))
+
+(pattern-4-64)
+
+(define pattern-4-64-dur 
+  (map (lambda (x) (* x step)) pattern-4-64))
+
+(define pattern-4-72-dur 
+  (map (lambda (x) (* x step)) pattern-4-72))
+
+(define pattern-4-64-velo
+  (map (lambda (x) 80) pattern-4-64))
+
+(define pattern-4-72-velo
+  (map (lambda (x) 80) pattern-4-72))
+
+
+
+
+(define pattern-552-dur 
+  (map (lambda (x) (* x step)) pattern-552))
+
+(define pattern-552-velo
+  (map (lambda (x) 80) pattern-552))
+
+(define instrument1
+  (list-of-constant  16 touc-pair))
+
+(define instrument1-transition
+  (list-of-constant  96 touc-pair))
+
+(define instrument1-2
+  (list-of-constant  24 touc-pair))
+
+
+
+(define trans-to-552-velo
+  (map (lambda (x) 80) trans-to-552-dur))
+
+
+
+(println 'F')
+
+
+(block0 (now))
+
+
+(define block1
+  (lambda (time)
+    (let ((nb-loop 1) (instr instrument1-transition) (pat-dur trans-to-552-dur) (pat-velo trans-to-552-velo))
+      (begin
+        (println "block1")
+        (play-n-times-instrument time instr 
+                                      pat-dur 
+                                      pat-velo nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list pat-dur ))) 
+                 'block2 (+ time (* nb-loop (sum-of-list pat-dur ))))))))
+
+(define block2
+  (lambda (time)
+    (let ((nb-loop 1) 
+          (instr block2-instrument1) 
+          (pat-dur block2-pattern1-dur) 
+          (pat-velo block2-pattern1-velo))
+      (begin
+        (println "block2")
+        (play-n-times-instrument time instr 
+                                      pat-dur 
+                                      pat-velo nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list pat-dur ))) 
+                 'blockpi (+ time (* nb-loop (sum-of-list pat-dur ))))))))
+
+
+
+(begin
+
+
+
+;;tempo statique sur 132 steps (12 mesures)
+(define pattern1-instr
+  (list-of-constant (length pattern16-64)  touc-pair))
+(define pattern4-instr
+  (list-of-constant (length pattern-i8-64)  touc-pair))
+(define pattern1-dur
+  (map (lambda (x) (* (/ step 2) x)) pattern16-64))
+(define pattern4-dur
+  (map (lambda (x) (* (/ step 2) x)) pattern-i8-64))
+(define pattern1-velo
+  (map (lambda (x) 50) pattern16-64))
+(define pattern4-velo
+  (map (lambda (x) 50) pattern-i8-64))
+
+
+(block0 (now))
+(define block0
+  (lambda (time)
+    (let ((nb-loop 2))
+      (begin
+        (println "block0")
+        (play-n-times-instrument time pattern1-instr 
+                                      pattern1-dur 
+                                      pattern1-velo nb-loop)
+        (play-n-times-instrument time pattern4-instr 
+                                      pattern4-dur 
+                                      pattern4-velo nb-loop)
+        ;(play-n-times-instrument time test-pattern3-instr 
+        ;                              test-pattern3-dur 
+        ;                              test-pattern3-velo nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list test-pattern1-dur))) 
+                 'block2 (+ time (* nb-loop (sum-of-list test-pattern1-dur))))))))
+
+
+;;ik-5;ik-7;ik-7;
+
+
+
+(define pattern2 (merge-patterns (pattern-list (pattern-pair 'ik 5))
+                                  (reverse-list (pattern-list (pattern-pair 'ik 7)))
+                                  (pattern-list (pattern-pair 'ik 7))))
+
+(define pattern2-instr
+  (list-of-constant (length pattern2) guitAm-pair))
+
+(define pattern2-dur
+  (map (lambda (x) (* (* 1 step) x)) pattern2))
+
+(define pattern2-velo
+  (map (lambda (x) (* x 10)) pattern2))
+
+
+;;nk-8;ik-7;sk-8
+
+
+
+
+
+(define pattern3 (merge-patterns (pattern-list (pattern-pair 'nk 8))
+                                 (pattern-list (pattern-pair 'ik 7))
+                                 (pattern-list (pattern-pair 'sk 8))))
+
+;;sk-3;ik-7;pkc-6 x3
+(define pattern3 (repeat-list (merge-patterns (pattern-list (pattern-pair 'sk 3))
+                                 (pattern-list (pattern-pair 'ik 7))
+                                 (pattern-list (pattern-pair 'pkc 6))) 3))
+
+(define pattern3 (merge-patterns (pattern-list (pattern-pair 'nk 8))
+                                 (pattern-list (pattern-pair 'ik 8))
+                                 (pattern-list (pattern-pair 'sk 8))))
+(define pattern3-instr
+  (list-of-constant (length pattern3)  piano_D5-pair))
+
+
+
+(define pattern3-dur
+  (map (lambda (x) (* (* 1 step) x)) pattern3))
+(define pattern3-velo
+  (map (lambda (x) (* x 5)) (reverse-composite pattern3)))
+
+(define pattern4-instr
+  (append (list-of-constant (length pattern-i4-16)  guitF-pair)
+          (list-of-constant (length pattern-i4-16)  guitAm-pair)
+          (list-of-constant (length pattern-i4-16)  guitC-pair)
+          (list-of-constant (length pattern-i4-16)  guitF-pair)))
+
+(define pattern4-dur
+  (map (lambda (x) (* (* 5 step) x)) (repeat-list pattern-i4-16 4)))
+(define pattern4-velo
+  (map (lambda (x) 100) (repeat-list pattern-i4-16 4)))
+
+;(play-instrument-list (now) pattern5-instr pattern5-dur pattern5-velo)
+
+(define pattern5-instr
+  (append (list-of-constant (length pattern-i4-16)  guitF-pair)
+          (list-of-constant (length pattern-i4-16)  guitF-pair)
+          (list-of-constant (length pattern-i4-16)  guitC-pair)
+          (list-of-constant (length pattern-i4-16)  guitE-pair)))
+
+(define pattern5-dur
+  (map (lambda (x) (* (* 5 step) x)) pattern-i4-16))
+(define pattern5-velo
+  (map (lambda (x) (+ 30 (* x 10))) (repeat-list pattern-i4-16 4)))
+
+
+
+(define pattern6-instr
+  (list frigo-pair papier-pair mirror-pair bricket-pair))
+(define pattern6-dur
+  (map (lambda (x) (* (* 5 step) x)) pattern-i4-16))
+(define pattern6-velo
+  (map (lambda (x) (- 100 (* 10 x))) pattern-i4-16))
+
+(define pattern6-instr2
+  (list frigo-pair papier-pair mirror-pair bricket-pair))
+(define pattern6-dur2
+  (map (lambda (x) (* (* 5 step) x)) (reverse-list pattern-i4-16)))
+(define pattern6-velo2
+  (map (lambda (x) (+ 20 x)) pattern-i4-16))
+
+
+(define pattern7-instr
+  (list-of-constant (length pattern-p10n3) guitAm-pair))
+(define pattern7-dur
+  (map (lambda (x) (* (* 5 step) x)) pattern-p10n3))
+(define pattern7-velo
+  (map (lambda (x) (- 100 (* x 10))) pattern-p10n3))
+(define pattern7-instr2
+  (list-of-constant (length pattern-p10n3) guitE-pair))
+(define pattern7-dur2
+  (map (lambda (x) (* (* 5 step) x)) pattern-p10n3))
+(define pattern7-velo2
+  (map (lambda (x) (* x 10)) pattern-p10n3))
+
+(define pattern8-instr
+  (list-of-constant (length pattern-p10n3) guitC-pair))
+(define pattern8-dur
+  (map (lambda (x) (* (* 5 step) x)) pattern-p10n3))
+(define pattern8-velo
+  (map (lambda (x) 100) pattern-p10n3))
+(define pattern8-instr2
+  (list-of-constant (length pattern-p10n3) guitE-pair))
+(define pattern8-dur2
+  (map (lambda (x) (* (* 5 step) x)) pattern-p10n3))
+(define pattern8-velo2
+  (map (lambda (x) 100) pattern-p10n3))
+
+(define pattern9-instr
+  (list-of-constant (length pattern-p4i4) guitAm-pair))
+(define pattern9-dur
+  (map (lambda (x) (* (* 10 step) x)) pattern-p4i4))
+(define pattern9-velo
+  (map (lambda (x) 85) pattern-p4i4))
+
+(define pattern9-instr2
+  (list-of-constant (length pattern-p4i4) guitC-pair))
+(define pattern9-instr3
+  (list-of-constant (length pattern-p4i4) guitF-pair))
+(define pattern9-instr4
+  (list-of-constant (length pattern-p4i4) guitE-pair))
+
+
+(define pattern10-instr
+  (list-of-constant (length pattern-p4i4) mirror-pair))
+(define pattern10-dur
+  (map (lambda (x) (* (* 10 step) x)) (reverse-list pattern-p4i4)))
+(define pattern10-velo
+  (map (lambda (x) (+ (* 10 x) 20)) pattern-p4i4))
+
+(define pattern10-instr2
+  (list-of-constant (length pattern-p4i4) ting-pair))
+(define pattern10-dur2
+  (reverse-list (map (lambda (x) (* (* 5 step) x)) pattern-p4i4)))
+(define pattern10-velo2
+  (map (lambda (x) (- 80 (* x 10))) pattern-p4i4))
+
+(define pattern11-instr
+  (list-of-constant (length pattern6-78) pot-pair))
+(define pattern11-dur
+  (map (lambda (x) (* (* 10 step) x)) pattern6-78))
+(define pattern11-velo
+  (map (lambda (x) (* x (random 8))) pattern6-78))
+
+(define pattern12-instr
+  (list-of-constant (length pattern13-78) bricket-pair))
+(define pattern12-dur
+  (map (lambda (x) (* (* 10 step) x)) pattern13-78))
+(define pattern12-velo
+  (map (lambda (x) (* x 10)) pattern13-78))
+
+(define pattern13-instr
+  (list-of-constant (length pattern-p4i4) mirror-pair))
+(define pattern13-dur
+  (map (lambda (x) (* (* 10 step) x)) (reverse-list pattern-p4i4)))
+(define pattern13-velo
+  (map (lambda (x) (+ (* 10 x) 20)) pattern-p4i4))
+
+(define pattern13-instr2
+  (list-of-constant (length pattern-p4i4) ting-pair))
+(define pattern13-dur2
+  (reverse-list (map (lambda (x) (* (* 5 step) x)) pattern-p4i4)))
+(define pattern13-velo2
+  (map (lambda (x) (- 80 (* x 10))) pattern-p4i4))
+
+
+)
+
+(play-n-times-instrument (now) pattern10-instr2 pattern10-dur2 pattern10-velo2 1)
+(play-n-times-instrument (now) pattern9-instr pattern9-dur pattern9-velo 1)
+
+(pattern6-instr)
+
+(sum-of-list pattern-p10n3)
+(untrace play-instrument-list)
+
+
+;"ik-7;sk-8;pkc-6;" "-> Termes:" 4 "| length: " 64
+
+;"nkc-3;ikc-5;nkc-5;" "-> Termes:" 8 "| length: " 64
+;"ikc-3;ikc-5;nkc-5;" "-> Termes:" 8 "| length: " 64
+
+
+(begin
+
+(define static-pattern-64
+  (list-of-constant 8 8))
+
+(define static-pattern-64-8
+  (repeat-list static-pattern-64 8))
+
+(static-pattern-64-8)
+
+(define velo
+  (list-of-constant 8 80))
+
+(define velo-8
+  (list-of-constant 64 80))
+
+(define static-pattern-64-dur
+  (map (lambda (x) (* x 5000)) static-pattern-64))
+
+(define static-pattern-64-8-dur
+  (map (lambda (x) (* x 5000)) static-pattern-64-8))
+
+(define complex-pattern
+  (pattern-list (pattern-pair ik 15)))
+
+(define complex-pattern-8
+  (repeat-list complex-pattern 8))
+
+(define complex-pattern-dur
+  (map (lambda (x) (* x 5000)) complex-pattern))
+
+(define complex-pattern-8-dur
+  (map (lambda (x) (* x 5000)) complex-pattern-8))
+
+(define trans-pattern
+  (transition static-pattern-64-8-dur 
+              complex-pattern-8-dur 
+              (sum-of-list static-pattern-64-8-dur)))
+
+
+
+(trans-pattern)
+
+(define instrument (list-of-constant 8 guitAm-pair))
+(define instrument-8 (list-of-constant 64 guitAm-pair))
+
+(define trans0
+  (lambda (time)
+    (let ((nb-loop 1))
+      (begin
+        (println "trans0")
+        (play-n-times-instrument time instrument 
+                                      static-pattern-64-dur 
+                                      velo 
+                                      nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list static-pattern-64-dur))) 
+                 'trans1 (+ time (* nb-loop (sum-of-list static-pattern-64-dur))))))))
+
+(define trans1
+  (lambda (time)
+    (let ((nb-loop 1))
+      (begin
+        (println "trans1")
+        (play-n-times-instrument time instrument-8 
+                                      trans-pattern 
+                                      velo-8 
+                                      nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list trans-pattern))) 
+                 'trans2 (+ time (* nb-loop (sum-of-list trans-pattern))))))))
+
+(define trans2
+  (lambda (time)
+    (let ((nb-loop 1))
+      (begin
+        (println "trans2")
+        (play-n-times-instrument time instrument 
+                                      complex-pattern-dur 
+                                      velo 
+                                      nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list static-pattern-64-dur))) 
+                 'transpi (+ time (* nb-loop (sum-of-list static-pattern-64-dur))))))))
+
+(trans0 (now))  
+)
+
+
+)
+
+
+
+(begin
+(define test-pattern1 (merge-patterns (pattern-list (pattern-pair 'nkc 3))
+                                      (pattern-list (pattern-pair 'ikc 5))
+                                      (pattern-list (pattern-pair 'nkc 5))))
+
+;(define test-pattern-1 (repeat-list (pattern-list (pattern-pair 'sk 8)) 8))
+
+(define test-pattern1-instr
+  (list-of-constant (length test-pattern1) piano_chord_prog1-pair))
+
+(define test-pattern1-dur
+  (map (lambda (x) (* (* 10 step) x)) test-pattern1))
+
+(define test-pattern1-velo
+  (map (lambda (x) 100) test-pattern1))
+
+
+;sk-8;ik-7;pkc-6
+(define test-pattern2 (merge-patterns (pattern-list (pattern-pair 'nkc 5))
+                                      (reverse-composite (pattern-list (pattern-pair 'ikc 5)))
+                                      (pattern-list (pattern-pair 'sk 2))))
+
+
+(define test-pattern2-instr
+  (list-of-constant (length test-pattern2) piano_D5-pair))
+
+(define test-pattern2-dur
+  (map (lambda (x) (* (* 10 step) x)) test-pattern2))
+
+(define test-pattern2-velo
+  (map (lambda (x) 100) test-pattern2))
+
+
+;"ikc-3;pkc-4;nkc-5;" "-> Termes:" 8 "| length: " 64
+;"pkc-2;ikc-1;nkc-5;" "-> Termes:" 8 "| length: " 32
+;"pkc-2;pkc-6;ikc-5;" "-> Termes:" 4 "| length: " 32
+
+(define test-pattern3 (merge-patterns (reverse-composite (pattern-list (pattern-pair ikc 3)))
+                                      (pattern-list (pattern-pair pkc 4))
+                                      (pattern-list (pattern-pair nkc 5))))
+
+
+
+(define test-pattern3-instr-a
+  (list-of-constant (/ (length test-pattern3) 2) papier-pair))
+(define test-pattern3-instr-b
+  (list-of-constant (/ (length test-pattern3) 2) bricket-pair))
+
+(define test-pattern3-instr
+  (map (lambda (x) ting-pair) test-pattern3))
+
+
+(define test-pattern3-instr
+  (zip-lists test-pattern3-instr-a test-pattern3-instr-b))
+
+(define test-pattern3-dur
+  (map (lambda (x) (* (* 10 step) x)) test-pattern3))
+
+(define test-pattern3-velo
+  (map (lambda (x) 100) test-pattern3))
+
+
+
+
+
+
+
+(define blocktest
+  (lambda (time)
+    (let ((nb-loop 2))
+      (begin
+        (println "block0")
+        ;(play-n-times-instrument time test-pattern1-instr 
+        ;                              test-pattern1-dur 
+        ;                              test-pattern1-velo nb-loop)
+        (play-n-times-instrument time test-pattern2-instr 
+                                      test-pattern2-dur 
+                                      test-pattern2-velo nb-loop)
+        (play-n-times-instrument time test-pattern3-instr 
+                                      test-pattern3-dur 
+                                      test-pattern3-velo nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list test-pattern1-dur))) 
+                 'block0 (+ time (* nb-loop (sum-of-list test-pattern1-dur))))))))
+)
+(sum-of-list test-pattern1-dur)
+(blocktest (now))
+
+(println pouf)
+
+(trace blocktest)
+
+(maquette (now))
+
+(pattern-p4i4)
+
+;(define step 750)
+
+(println "block0")
+
+;;poom tchak 64
+(define test-pattern3 (repeat-list (pattern-list (pattern-pair 'sk 8)) 8))
+
+(define test-pattern3-instr-a
+  (list-of-constant (/ (length test-pattern3) 2) papier-pair))
+(define test-pattern3-instr-b
+  (list-of-constant (/ (length test-pattern3) 2) bricket-pair))
+
+
+(define start-song
+  (lambda (time)
+    (block1 time)))
+
+(start-song (now))
+
+(begin
+
+
+
+(define pattern0 (repeat-list (pattern-list (pattern-pair 'sk 8)) 8))
+
+(define pattern0-instr-a
+  (list-of-constant (/ (length pattern0) 2) papier-pair))
+(define pattern0-instr-b
+  (list-of-constant (/ (length pattern0) 2) bricket-pair))
+
+(define pattern0-instr
+  (zip-lists pattern0-instr-a pattern0-instr-b))
+
+(define pattern0-dur
+  (map (lambda (x) (* (* 10 step) x)) pattern0))
+
+(define pattern0-velo
+  (map (lambda (x) 100) pattern0))
+
+;;sk-8;ik-7;ik-7
+(define pattern3 (reverse-list (merge-patterns (pattern-list (pattern-pair 'sk 12))
+                                      (pattern-list (pattern-pair 'ik 7)))
+                                      (pattern-list (pattern-pair 'ik 7))))
+
+
+(define pattern3-instr
+  (list-of-constant (length pattern3) piano_notes_graves_A-pair))
+
+(define pattern3-dur
+  (map (lambda (x) (* (* 10 step) x)) pattern3))
+
+
+(define pattern3-velo
+  (map (lambda (x) 100) pattern3))
+
+(define block0
+  (lambda (time)
+    (let ((nb-loop 1))
+      (begin
+        (println "block0")
+        (play-note (now) piano_broken_melo1 10 80 379076)
+
+        (play-n-times-instrument time pattern0-instr 
+                                      pattern0-dur 
+                                      pattern0-velo nb-loop)
+        (play-n-times-instrument time pattern3-instr 
+                                      pattern3-dur 
+                                      pattern3-velo nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list pattern0-dur))) 
+                 'block1 (+ time (* nb-loop (sum-of-list pattern0-dur))))))))
+
+)
+
+
+(define pattern1 (merge-patterns (pattern-list (pattern-pair 'ik 7))
+                                      (pattern-list (pattern-pair 'sk 8))
+                                      (reverse-composite (pattern-list (pattern-pair 'pkc 6)))))
+
+;(define test-pattern-1 (repeat-list (pattern-list (pattern-pair 'sk 8)) 8))
+
+(define pattern1-instr
+  (list-of-constant (length pattern1) mirror-pair))
+
+(define pattern1-dur
+  (map (lambda (x) (* (* 10 step) x)) pattern1))
+
+(define pattern1-velo
+  (map (lambda (x) 100) pattern1))
+
+(define pattern2 (merge-patterns (pattern-list (pattern-pair 'nkc 5))
+                                      (reverse-composite (pattern-list (pattern-pair 'ikc 5)))
+                                      (pattern-list (pattern-pair 'sk 2))))
+
+
+(define pattern2-instr
+  (list-of-constant (length pattern2) piano_D5-pair))
+
+(define pattern2-dur
+  (map (lambda (x) (* (* 10 step) x)) pattern2))
+
+(define pattern2-velo
+  (map (lambda (x) 100) pattern2))
+
+
+
+(define pattern3 (reverse-list (pattern-list (pattern-pair ik 15))))
+
+
+(define pattern3-instr
+  (list-of-constant (length pattern3) piano_high_percu))
+
+(define pattern3-dur
+  (map (lambda (x) (* (* 10 step) x)) pattern3))
+
+(define pattern3-velo
+  (map (lambda (x) (- 150 (* x 10))) pattern3))
+
+(define block1
+  (lambda (time)
+    (let ((nb-loop 1))
+      (begin
+        (println "block1")
+        (play-n-times-instrument time pattern1-instr 
+                                      pattern1-dur 
+                                      pattern1-velo nb-loop)
+        ;(play-n-times-instrument time pattern2-instr 
+        ;                              pattern2-dur 
+        ;                              pattern2-velo nb-loop)
+        ;(play-n-times-instrument time pattern3-instr 
+        ;                              pattern3-dur 
+        ;                              pattern3-velo nb-loop)
+        (play-n-times-instrument time pattern4-instr 
+                                      pattern4-dur 
+                                      pattern4-velo nb-loop)
+        
+        (callback (+ time (* nb-loop (sum-of-list pattern1-dur))) 
+                 'block2 (+ time (* nb-loop (sum-of-list pattern1-dur))))))))
+
+(define block2
+  (lambda (time)
+    (let ((nb-loop 4))
+      (begin
+        (println "block0")
+        (play-note (now) piano_broken_melo1 10 80 379076)
+        (play-n-times-instrument time pattern1-instr 
+                                      pattern1-dur 
+                                      pattern1-velo nb-loop)
+        (play-n-times-instrument time pattern2-instr 
+                                      pattern2-dur 
+                                      pattern2-velo nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list pattern1-dur))) 
+                 'blockpi (+ time (* nb-loop (sum-of-list pattern1-dur))))))))
+
+
+
+
+
+
+
+)
+;;test
+
+
+(block2 (now))
+
+
+
+(maquette (now))
+(begin
+(define block2
+  (lambda (time)
+    (let ((nb-loop 1))
+      (begin
+        (println "block2")
+        (play-n-times-instrument time pattern1-instr pattern1-dur pattern1-velo nb-loop)
+        (play-n-times-instrument time pattern2-instr pattern2-dur pattern2-velo nb-loop)
+        (play-n-times-instrument time pattern3-instr pattern3-dur pattern3-velo nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list pattern1-dur))) 
+                 'block3 (+ time (* nb-loop (sum-of-list pattern1-dur))))))))
+
+(define block3
+  (lambda (time)
+    (let ((nb-loop 4))
+      (begin
+        (println "block3")
+        (play-n-times-instrument time pattern1-instr pattern1-dur pattern1-velo nb-loop)
+        (play-n-times-instrument time pattern2-instr pattern2-dur pattern2-velo nb-loop)
+        (play-n-times-instrument time pattern3-instr pattern3-dur pattern3-velo nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list pattern1-dur))) 
+                 'blockpi (+ time (* nb-loop (sum-of-list pattern1-dur))))))))
+
+(define block3
+  (lambda (time)
+    (let ((nb-loop 1))
+      (begin
+        (println "block3")
+        (play-n-times-instrument time pattern6-instr pattern6-dur pattern6-velo (* 4 nb-loop))
+        (play-n-times-instrument time pattern1-instr pattern1-dur pattern1-velo nb-loop)
+        (play-n-times-instrument time pattern4-instr pattern4-dur pattern4-velo nb-loop)
+        (play-n-times-instrument time pattern4-instr 
+          (map (lambda (x) (+ x (/ step ( * 7 (sum-of-list pattern1-dur))))) pattern4-dur) 
+          pattern4-velo nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list pattern1-dur))) 
+                 'block4 (+ time (* nb-loop (sum-of-list pattern1-dur))))))))
+
+(define block4
+  (lambda (time)
+    (let ((nb-loop 1))
+      (begin
+        (println "block4")
+        (play-n-times-instrument time pattern6-instr pattern6-dur pattern6-velo nb-loop)
+        (play-n-times-instrument time pattern6-instr2 pattern6-dur2 pattern6-velo2 nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list pattern6-dur))) 
+                 'block5 (+ time (* nb-loop (sum-of-list pattern6-dur))))))))
+
+(define block5
+  (lambda (time)
+    (let ((nb-loop 1))
+      (begin
+        (println "block5")
+        (play-n-times-instrument time pattern5-instr pattern5-dur pattern5-velo nb-loop)
+        (play-n-times-instrument time pattern6-instr pattern6-dur pattern6-velo (* 4 nb-loop))
+        (play-n-times-instrument time pattern4-instr 
+          (map (lambda (x) (+ x (/ step ( * 15 (sum-of-list pattern1-dur))))) pattern5-dur) 
+          pattern5-velo nb-loop)
+        (play-n-times-instrument time pattern4-instr 
+          (map (lambda (x) (+ x (/ step ( * 60 (sum-of-list pattern1-dur))))) pattern5-dur) 
+          pattern5-velo nb-loop)
+
+        (callback (+ time (* nb-loop (sum-of-list pattern5-dur))) 
+                 'block6 (+ time (* nb-loop (sum-of-list pattern5-dur))))))))
+
+(define block6
+  (lambda (time)
+    (let ((nb-loop 1))
+      (begin
+        (println "block6")
+        (play-n-times-instrument time pattern6-instr2 pattern6-dur2 pattern6-velo2 nb-loop)
+        (play-n-times-instrument time pattern7-instr pattern7-dur pattern7-velo nb-loop)
+        (play-n-times-instrument time pattern8-instr pattern8-dur pattern8-velo nb-loop)
+        (callback (+ time (* nb-loop (sum-of-list pattern7-dur))) 
+                 'block8 (+ time (* nb-loop (sum-of-list pattern7-dur))))))))
+
+(define block8
+  (lambda (time)
+    (let ((nb-loop 1))
+      (begin
+        (println "block8")
+        (play-n-times-instrument time pattern9-instr3 pattern9-dur pattern9-velo nb-loop)
+        (play-n-times-instrument time pattern10-instr pattern10-dur pattern10-velo (* 1 nb-loop))
+        (callback (+ time (* nb-loop (sum-of-list pattern9-dur 0))) 
+                 'block9 (+ time (* nb-loop (sum-of-list pattern9-dur))))))))
+
+(define block9
+  (lambda (time)
+    (let ((nb-loop 1))
+      (begin
+        (println "block9")
+        (play-n-times-instrument time pattern13-instr pattern13-dur pattern13-velo nb-loop)
+        (play-n-times-instrument time pattern13-instr pattern13-dur pattern13-velo (* 1 nb-loop))
+        (play-n-times-instrument time pattern10-instr2 pattern10-dur2 pattern10-velo2 (* 1 nb-loop))
+        (play-n-times-instrument time pattern11-instr pattern11-dur pattern11-velo nb-loop)
+        (play-n-times-instrument time pattern12-instr pattern12-dur pattern12-velo (* 1 nb-loop))
+        (callback (+ time (* nb-loop (sum-of-list pattern9-dur))) 
+                 'block11 (+ time (* nb-loop (sum-of-list pattern9-dur))))))))
+
+
+(define block11
+  (lambda (time)
+    (let ((nb-loop 1))
+      (begin
+        (println "block11")
+        (play-n-times-instrument time pattern9-instr2 pattern9-dur pattern9-velo nb-loop)
+        (play-n-times-instrument time pattern10-instr pattern10-dur pattern10-velo (* 1 nb-loop))
+        (play-n-times-instrument time pattern10-instr2 pattern10-dur2 pattern10-velo2 (* 1 nb-loop))
+        (play-n-times-instrument time pattern11-instr pattern11-dur pattern11-velo nb-loop)
+        (play-n-times-instrument time pattern12-instr pattern12-dur pattern12-velo (* 1 nb-loop))
+        (callback (+ time (* nb-loop (sum-of-list pattern9-dur))) 
+                 'block12 (+ time (* nb-loop (sum-of-list pattern9-dur))))))))
+
+(define block12
+  (lambda (time)
+    (let ((nb-loop 1))
+      (begin
+        (println "block12")
+        (play-n-times-instrument time pattern9-instr pattern9-dur pattern9-velo nb-loop)
+        (play-n-times-instrument time pattern10-instr pattern10-dur pattern10-velo (* 1 nb-loop))
+        (play-n-times-instrument time pattern10-instr2 pattern10-dur2 pattern10-velo2 (* 1 nb-loop))
+        (play-n-times-instrument time pattern11-instr pattern11-dur pattern11-velo nb-loop)
+        (play-n-times-instrument time pattern12-instr pattern12-dur pattern12-velo (* 1 nb-loop))
+
+        (callback (+ time (* nb-loop (sum-of-list pattern9-dur))) 
+                 'block13 (+ time (* nb-loop (sum-of-list pattern9-dur))))))))
+
+(define block13
+  (lambda (time)
+    (let ((nb-loop 1))
+      (begin
+        (println "block13")
+        (play-n-times-instrument time pattern1-instr pattern1-dur pattern1-velo nb-loop)
+        (play-n-times-instrument time pattern2-instr pattern2-dur pattern2-velo (* 1 nb-loop))
+        (play-n-times-instrument time pattern7-instr2 pattern7-dur2 pattern7-velo2 (* 1 nb-loop))
+
+        (callback (+ time (* nb-loop (sum-of-list pattern1-dur))) 
+                 'block14 (+ time (* nb-loop (sum-of-list pattern1-dur))))))))
+(define block14
+  (lambda (time)
+    (let ((nb-loop 1))
+      (begin
+        (println "block14")
+        (play-n-times-instrument time pattern1-instr pattern1-dur pattern1-velo nb-loop)
+        (play-n-times-instrument time pattern2-instr pattern2-dur pattern2-velo (* 1 nb-loop))
+        (play-n-times-instrument time pattern3-instr pattern7-dur2 pattern7-velo2 (* 1 nb-loop))
+
+        (callback (+ time (* nb-loop (sum-of-list pattern1-dur))) 
+                 'block15 (+ time (* nb-loop (sum-of-list pattern1-dur))))))))
+
+(define block15
+  (lambda (time)
+    (let ((nb-loop 1))
+      (begin
+        (println "block15")
+        (play-n-times-instrument time pattern1-instr pattern1-dur pattern1-velo nb-loop)
+        (play-n-times-instrument time pattern2-instr pattern2-dur pattern2-velo (* 1 nb-loop))
+        (play-n-times-instrument time pattern7-instr2 pattern7-dur2 pattern7-velo2 (* 1 nb-loop))
+        (play-n-times-instrument time pattern7-instr pattern7-dur2 pattern7-velo2 (* 1 nb-loop))
+
+
+        (callback (+ time (* nb-loop (sum-of-list pattern1-dur))) 
+                 'block16 (+ time (* nb-loop (sum-of-list pattern1-dur))))))))
+
+(define block16
+  (lambda (time)
+    (let ((nb-loop 1))
+      (begin
+        (println "block16")
+        (play-n-times-instrument time pattern1-instr pattern1-dur pattern1-velo nb-loop)
+        (play-n-times-instrument time pattern2-instr pattern2-dur pattern2-velo (* 1 nb-loop))
+        (play-n-times-instrument time pattern3-instr pattern3-dur pattern7-velo2 (* 1 nb-loop))
+        (play-n-times-instrument time pattern7-instr pattern7-dur pattern7-velo2 (* 1 nb-loop))
+
+
+        (callback (+ time (* nb-loop (sum-of-list pattern1-dur))) 
+                 'block17 (+ time (* nb-loop (sum-of-list pattern1-dur))))))))
+
+(define block17
+  (lambda (time)
+    (let ((nb-loop 1))
+      (begin
+        (println "block17")
+        (play-n-times-instrument time pattern1-instr pattern1-dur pattern1-velo nb-loop)
+        (play-n-times-instrument time pattern3-instr pattern3-dur pattern7-velo2 (* 1 nb-loop))
+
+
+        (callback (+ time (* nb-loop (sum-of-list pattern1-dur))) 
+                 'block18 (+ time (* nb-loop (sum-of-list pattern1-dur))))))))
+
+
+)
+
+
+
+
+
+
+
+
+
+
+
